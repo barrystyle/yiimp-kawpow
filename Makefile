@@ -1,7 +1,7 @@
 
 CC=gcc
 
-CFLAGS= -g
+CFLAGS= -g -O2
 SQLFLAGS= `mysql_config --cflags --libs`
 
 # Comment this line to disable address check on login,
@@ -26,6 +26,15 @@ LDFLAGS += $(LDCURL)
 
 OBJECTS=$(SOURCES:.cpp=.o)
 OUTPUT=stratum
+
+CODEDIR1=iniparser
+
+.PHONY: iniparser
+
+all: iniparser  $(SOURCES) $(OUTPUT)
+
+iniparser:
+	$(MAKE) -C $(CODEDIR1)
 
 all: $(SOURCES) $(OUTPUT)
 
