@@ -70,7 +70,6 @@ struct ifaddrs *g_ifaddr;
 volatile bool g_exiting = false;
 
 void *stratum_thread(void *p);
-void *monitor_thread(void *p);
 
 ////////////////////////////////////////////////////////////////////////////////////////
 
@@ -207,9 +206,6 @@ int main(int argc, char **argv)
 
 	////////////////////////////////////////////////
 
-	pthread_t thread1;
-	pthread_create(&thread1, NULL, monitor_thread, NULL);
-
 	pthread_t thread2;
 	pthread_create(&thread2, NULL, stratum_thread, NULL);
 
@@ -262,37 +258,6 @@ int main(int argc, char **argv)
 	closelogs();
 
 	return 0;
-}
-
-///////////////////////////////////////////////////////////////////////////////
-
-void *monitor_thread(void *p)
-{
-	while(!g_exiting)
-	{
-		sleep(120);
-
-		if(g_last_broadcasted + YAAMP_MAXJOBDELAY < time(NULL))
-		{
-			g_exiting = true;
-			stratumlogdate("%s dead lock, exiting...\n", g_stratum_algo);
-			exit(1);
-		}
-
-		if(g_max_shares && g_shares_counter) {
-
-			if((g_shares_counter - g_shares_log) > 10000) {
-				stratumlogdate("%s %luK shares...\n", g_stratum_algo, (g_shares_counter/1000u));
-				g_shares_log = g_shares_counter;
-			}
-
-			if(g_shares_counter > g_max_shares) {
-				g_exiting = true;
-				stratumlogdate("%s need a restart (%lu shares), exiting...\n", g_stratum_algo, (unsigned long) g_max_shares);
-				exit(1);
-			}
-		}
-	}
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -350,5 +315,7 @@ void *stratum_thread(void *p)
 
 		pthread_detach(thread);
 	}
+
+	return (void*)0;
 }
 

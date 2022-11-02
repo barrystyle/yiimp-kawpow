@@ -238,6 +238,7 @@ void *job_thread(void *p)
 		job_update();
 		pthread_cond_wait(&g_job_cond, &g_job_mutex);
 	}
+	return (void*)0;
 }
 
 void job_init()

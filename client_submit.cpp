@@ -315,6 +315,7 @@ bool dump_submit_debug(const char *title, YAAMP_CLIENT *client, YAAMP_JOB *job, 
 	debuglog("ERROR %s, %s subs %d, job %x, %s, id %x, %d, %s, %s %s\n",
 		title, client->sock->ip, client->extranonce_subscribe, job? job->id: 0, client->extranonce1,
 		client->extranonce1_id, client->extranonce2size, extranonce2, ntime, nonce);
+	return true;
 }
 
 void client_submit_error(YAAMP_CLIENT *client, YAAMP_JOB *job, int id, const char *message, char *extranonce2, char *ntime, char *nonce)
