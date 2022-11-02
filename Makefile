@@ -27,11 +27,18 @@ LDFLAGS += $(LDCURL)
 OBJECTS=$(SOURCES:.cpp=.o)
 OUTPUT=stratum
 
+CODEDIR0=preclean
 CODEDIR1=iniparser
 
-.PHONY: iniparser
+.PHONY: preclean iniparser
 
-all: iniparser  $(SOURCES) $(OUTPUT)
+all: preclean iniparser $(SOURCES) $(OUTPUT)
+
+preclean:
+	rm -f stratum
+	rm -rf *.*o
+	rm -rf */*.*o
+	rm -rf */*.a
 
 iniparser:
 	$(MAKE) -C $(CODEDIR1)
@@ -49,8 +56,7 @@ $(OUTPUT): $(OBJECTS)
 .c.o:
 	$(CC) $(CFLAGS) -c $<
 
-clean:
-	rm -f *.o
+clean:  preclean
 
 install: clean all
 	strip -s stratum
