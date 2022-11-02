@@ -28,6 +28,8 @@ using namespace std;
 #include "iniparser/src/iniparser.h"
 
 #include "json.h"
+#include "utilstrencodings.h"
+#include "uint256.h"
 #include "util.h"
 
 #define YAAMP_RESTARTDELAY		(24*60*60)
