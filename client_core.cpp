@@ -1,18 +1,6 @@
 
 #include "stratum.h"
 
-static int g_extraonce1_counter = 0;
-
-void get_next_extraonce1(char *extraonce1)
-{
-	CommonLock(&g_nonce1_mutex);
-
-	g_extraonce1_counter++;
-	sprintf(extraonce1, "%08x", g_extraonce1_counter|0x81000000);
-
-	CommonUnlock(&g_nonce1_mutex);
-}
-
 void get_random_key(char *key)
 {
 	int i1 = rand();

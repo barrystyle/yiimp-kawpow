@@ -519,6 +519,28 @@ uint64_t diff_to_target(double difficulty)
 	return t;
 }
 
+void diff_to_target(uint32_t *target, double diff)
+{
+        uint64_t m;
+        int k;
+
+        for (k = 6; k > 0 && diff > 1.0; k--)
+                diff /= 4294967296.0;
+        m = (uint64_t)(4294901760.0 / diff);
+        if (m == 0 && k == 6)
+                memset(target, 0xff, 32);
+        else {
+                memset(target, 0, 32);
+                target[k] = (uint32_t)m;
+                target[k + 1] = (uint32_t)(m >> 32);
+        }
+}
+
+void diff_to_target(uint256& target, double diff)
+{
+        diff_to_target((uint32_t*)&target, diff);
+}
+
 double target_to_diff(uint64_t target)
 {
 	if(!target) return 0;
@@ -717,6 +739,35 @@ void string_upper(char *s)
 	  s[i] = toupper(s[i]);
 }
 
+bool valid_string_params(json_value *json_params)
+{
+        for(int p=0; p < json_params->u.array.length; p++) {
+                if (!json_is_string(json_params->u.array.values[p]))
+                        return false;
+        }
+        return true;
+}
+
+void decode_nbits(uint256& target_, unsigned int nbits)
+{
+    unsigned char target[32];
+    memset(target, 0, sizeof(target));
+
+    unsigned int exp = nbits >> 24;
+    unsigned int mant = nbits & 0xffffff;
+
+    unsigned int shift = 8 * (exp - 3);
+    unsigned int sb = shift / 8;
+    unsigned int rb = shift % 8;
+
+    // little-endian
+    target[sb] = (mant << rb);
+    target[sb + 1] = (mant >> (8-rb));
+    target[sb + 2] = (mant >> (16-rb));
+    target[sb + 3] = (mant >> (24-rb));
+
+    memcpy(&target_, target, 32);
+}
 
 //////////////////////////////////////////////////////////////////////////////////////
 

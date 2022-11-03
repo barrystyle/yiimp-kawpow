@@ -8,6 +8,8 @@
 //	char ip[64];
 //};
 
+class YAAMP_JOB;
+
 struct YAAMP_ALGO
 {
 	char name[64];
@@ -100,6 +102,10 @@ public:
 
 	int donation;
 	int broadcast_timeouts;
+
+	//////////////////////////////////////////////////
+	uint256 share_target;
+	uint256 next_target;
 };
 
 inline void client_delete(YAAMP_OBJECT *object)
@@ -134,8 +140,7 @@ bool client_find_my_ip(const char *ip);
 
 //////////////////////////////////////////////////////////////////////////
 
-int client_send_difficulty(YAAMP_CLIENT *client, double difficulty);
-double client_normalize_difficulty(double difficulty);
+int client_send_difficulty(YAAMP_CLIENT *client, double difficulty, bool subscribe);
 
 void client_change_difficulty(YAAMP_CLIENT *client, double difficulty);
 void client_record_difficulty(YAAMP_CLIENT *client);
@@ -156,6 +161,7 @@ int client_send_error(YAAMP_CLIENT *client, int error, const char *string);
 bool client_ask_stats(YAAMP_CLIENT *client);
 
 bool client_submit(YAAMP_CLIENT *client, json_value *json_params);
+void client_submit_error(YAAMP_CLIENT *client, YAAMP_JOB *job, int id, const char *message, char *extranonce2, char *ntime, char *nonce);
 
 int client_workers_count(YAAMP_CLIENT *client);
 int client_workers_byaddress(const char *username);

@@ -50,8 +50,8 @@ typedef void (*YAAMP_HASH_FUNCTION)(const char *, char *, uint32_t);
 
 #define YAAMP_SMALLBUFSIZE		(32*1024)
 
-#define YAAMP_NONCE_SIZE		4
-#define YAAMP_EXTRANONCE2_SIZE	4
+#define YAAMP_NONCE_SIZE		8
+#define YAAMP_EXTRANONCE2_SIZE		4
 
 #define YAAMP_HASHLEN_STR		65
 #define YAAMP_HASHLEN_BIN		32
@@ -66,6 +66,9 @@ extern CommonList g_list_worker;
 extern CommonList g_list_block;
 extern CommonList g_list_submit;
 extern CommonList g_list_source;
+
+extern bool is_kawpow;
+extern bool is_firopow;
 
 extern int g_tcp_port;
 
@@ -113,6 +116,7 @@ extern struct ifaddrs *g_ifaddr;
 
 extern pthread_mutex_t g_db_mutex;
 extern pthread_mutex_t g_nonce1_mutex;
+extern pthread_mutex_t g_context_mutex;
 extern pthread_mutex_t g_job_create_mutex;
 
 extern volatile bool g_exiting;
@@ -126,6 +130,8 @@ extern volatile bool g_exiting;
 #include "coind.h"
 #include "remote.h"
 #include "share.h"
+#include "kawpow/hash.h"
+#include "kawpow/kawpow.h"
 
 extern YAAMP_DB *g_db;
 extern YAAMP_ALGO g_algos[];

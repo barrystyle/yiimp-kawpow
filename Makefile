@@ -20,7 +20,7 @@ SOURCES=stratum.cpp db.cpp coind.cpp coind_aux.cpp coind_template.cpp coind_subm
 	user.cpp object.cpp json.cpp base58.cpp sha256.cpp uint256.cpp utilstrencodings.cpp \
 	\
 	kawpow/lib/keccak/keccak.c kawpow/lib/keccak/keccakf800.c kawpow/lib/keccak/keccakf1600.c kawpow/lib/ethash/primes.c \
-	kawpow/lib/ethash/ethash.cpp kawpow/lib/ethash/progpow.cpp kawpow/hash.cpp
+	kawpow/lib/ethash/ethash.cpp kawpow/lib/ethash/progpow.cpp kawpow/hash.cpp kawpow/kawpow.cpp
 
 CFLAGS += -DHAVE_CURL
 SOURCES += rpc_curl.cpp

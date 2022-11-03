@@ -98,6 +98,9 @@ uint64_t htoi64(const char *s);
 uint64_t decode_compact(const char *input);
 
 uint64_t diff_to_target(double difficulty);
+void diff_to_target(uint32_t *target, double diff);
+void diff_to_target(uint256& target, double diff);
+
 double target_to_diff(uint64_t target);
 
 uint64_t get_hash_difficulty(unsigned char *input);
@@ -112,6 +115,9 @@ void string_lower(char *s);
 void string_upper(char *s);
 
 int getblocheight(const char *coinb1);
+
+bool valid_string_params(json_value *json_params);
+void decode_nbits(uint256& target_, unsigned int nbits);
 
 //////////////////////////////////////////////////////////////////////////
 

@@ -496,6 +496,12 @@ YAAMP_JOB_TEMPLATE *coind_create_template(YAAMP_COIND *coind)
 		coind_aux_build_auxs(templ);
 
 	coinbase_create(coind, templ, json_result);
+
+	// kawpow
+	update_epoch(templ->height);
+	templ->header_seed = get_kawpow_seed(templ->height);
+	templ->header_hash = build_header_hash(templ);
+
 	json_value_free(json);
 
 	return templ;

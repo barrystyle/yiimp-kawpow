@@ -63,6 +63,7 @@ YAAMP_DB *g_db = NULL;
 
 pthread_mutex_t g_db_mutex;
 pthread_mutex_t g_nonce1_mutex;
+pthread_mutex_t g_context_mutex;
 pthread_mutex_t g_job_create_mutex;
 
 struct ifaddrs *g_ifaddr;
@@ -71,11 +72,16 @@ volatile bool g_exiting = false;
 
 void *stratum_thread(void *p);
 
+bool is_kawpow = false;
+bool is_firopow = false;
+
 ////////////////////////////////////////////////////////////////////////////////////////
 
 YAAMP_ALGO g_algos[] =
 {
 	{"sha256", sha256_double_hash, 1, 0, 0},
+	{"kawpow", sha256_double_hash, 0x100, 0, 0},
+	{"firopow", sha256_double_hash, 1, 0, 0},
 
 	{"", NULL, 0, 0},
 };
@@ -166,6 +172,15 @@ int main(int argc, char **argv)
 	if(!g_current_algo) yaamp_error("invalid algo");
 	if(!g_current_algo->hash_function) yaamp_error("no hash function");
 
+	if (!strcmp(g_current_algo->name,"kawpow")) {
+		is_kawpow = true;
+	} else if (!strcmp(g_current_algo->name,"firopow")) {
+		is_firopow = true;
+	} else {
+		debuglog("this stratum only supports kawpow or firopow-based coins.\n");
+		return 1;
+	}
+
 //	struct rlimit rlim_files = {0x10000, 0x10000};
 //	setrlimit(RLIMIT_NOFILE, &rlim_files);
 
@@ -190,6 +205,7 @@ int main(int argc, char **argv)
 
 	yaamp_create_mutex(&g_db_mutex);
 	yaamp_create_mutex(&g_nonce1_mutex);
+	yaamp_create_mutex(&g_context_mutex);
 	yaamp_create_mutex(&g_job_create_mutex);
 
 	YAAMP_DB *db = db_connect();
@@ -202,14 +218,14 @@ int main(int argc, char **argv)
 	sleep(2);
 	job_init();
 
-//	job_signal();
+	// job_signal();
 
 	////////////////////////////////////////////////
 
 	pthread_t thread2;
 	pthread_create(&thread2, NULL, stratum_thread, NULL);
 
-	sleep(20);
+	sleep(1);
 
 	while(!g_exiting)
 	{
