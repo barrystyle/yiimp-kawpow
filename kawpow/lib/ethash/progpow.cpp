@@ -12,7 +12,7 @@
 
 #include <array>
 
-namespace progpow
+namespace kawpow
 {
 namespace
 {
@@ -578,4 +578,4 @@ search_result search(const epoch_context_full& context, int block_number,
     return {};
 }
 
-}  // namespace progpow
+}  // namespace kawpow

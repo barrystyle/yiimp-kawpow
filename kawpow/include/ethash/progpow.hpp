@@ -10,7 +10,7 @@
 
 #include <kawpow/include/ethash/ethash.hpp>
 
-namespace progpow
+namespace kawpow
 {
 using namespace ethash;  // Include ethash namespace.
 
@@ -46,4 +46,4 @@ search_result search(const epoch_context_full& context, int block_number,
     const hash256& header_hash, const hash256& boundary, uint64_t start_nonce,
     size_t iterations) noexcept;
 
-}  // namespace progpow
+}  // namespace kawpow

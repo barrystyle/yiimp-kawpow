@@ -20,7 +20,7 @@ void update_epoch(int& header_height)
 uint256 kawpow_fullhash(uint256& header_hash, uint64_t& header_nonce, uint256& mix_hash)
 {
     const auto hash = to_hash256(header_hash.ToString());
-    const auto result = progpow::hash(*context, cache_height, hash, header_nonce);
+    const auto result = kawpow::hash(*context, cache_height, hash, header_nonce);
     mix_hash = uint256S(to_hex(result.mix_hash));
     uint256 result_hash = uint256S(to_hex(result.final_hash));
 
