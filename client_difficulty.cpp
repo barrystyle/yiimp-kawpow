@@ -46,9 +46,8 @@ int client_send_difficulty(YAAMP_CLIENT *client, double difficulty, bool subscri
 	if (subscribe) {
 		client->share_target = share_target;
 		client_call(client, "mining.set_target", "[\"%s\"]", client->share_target.ToString().c_str());
-	} else {
-		client->next_target = share_target;
 	}
+	client->next_target = share_target;
 
 	return 0;
 }
