@@ -192,7 +192,6 @@ static void kawpow_block(YAAMP_CLIENT* client, YAAMP_JOB* job, const char* nonce
             debuglog("*** ACCEPTED %s %d by %s (id: %d)\n", coind->name, templ->height,
                 client->sock->ip, client->userid);
             job->block_found = true;
-            job_signal();
         } else {
             debuglog("*** REJECTED :( %s block %d %d txs\n", coind->name, templ->height, templ->txcount);
             rejectlog("REJECTED %s block %d\n", coind->symbol, templ->height);
@@ -242,6 +241,8 @@ bool kawpow_submit(YAAMP_CLIENT* client, json_value* json_params)
         return true;
     }
 
+    int coinid = job->coind->id;
+
     //! sanity check nonce
     if (strlen(nonce) != YAAMP_NONCE_SIZE * 2 || !ishexa(nonce, YAAMP_NONCE_SIZE * 2)) {
         client_submit_error(client, job, 20, "Invalid nonce size", header, mixhash, nonce);
@@ -271,7 +272,7 @@ bool kawpow_submit(YAAMP_CLIENT* client, json_value* json_params)
     std::string nonce_str = string(nonce);
 
     std::string mixhash_calc;
-    uint256 hash = kawpow_hash(header_str, nonce_str, mixhash_calc);
+    uint256 hash = kawpow_hash(header_str, nonce_str, mixhash_calc, coinid);
 
     uint256 target = client->share_target;
     uint64_t hash_int = get_hash_difficulty((uint8_t*)&hash);
