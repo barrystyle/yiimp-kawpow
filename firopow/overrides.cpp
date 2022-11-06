@@ -18,6 +18,15 @@ const int get_ethash_period_length()
 	return 0;
 }
 
+const int get_full_dataset_init_size()
+{
+	if (is_firopow)
+		return (1 << 30) + (1 << 29);
+	if (is_kawpow)
+		return (1 << 30);
+        return 0;
+}
+
 const int get_epoch_number(int block_number)
 {
     return block_number ? block_number / get_ethash_epoch_length() : 0;

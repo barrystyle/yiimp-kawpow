@@ -8,7 +8,7 @@ uint256 firopow_fullhash(uint256& header_hash, uint64_t& header_nonce, uint256& 
         return badhash;
     }
 
-    const auto hash = to_hash256(header_hash.ToString());
+    ethash::hash256 hash = to_hash256(header_hash.ToString());
     const auto result = firopow::hash(*context->context, context->height, hash, header_nonce);
     mix_hash = uint256S(to_hex(result.mix_hash));
     uint256 result_hash = uint256S(to_hex(result.final_hash));

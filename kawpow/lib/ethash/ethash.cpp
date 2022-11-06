@@ -11,6 +11,8 @@
 #include <kawpow/include/ethash/keccak.hpp>
 #include <kawpow/include/ethash/progpow.hpp>
 
+#include <firopow/overrides.h>
+
 #include <cassert>
 #include <cstdlib>
 #include <cstring>
@@ -22,7 +24,6 @@ namespace ethash
 constexpr static int light_cache_init_size = 1 << 24;
 constexpr static int light_cache_growth = 1 << 17;
 constexpr static int light_cache_rounds = 3;
-constexpr static int full_dataset_init_size = 1 << 30;
 constexpr static int full_dataset_growth = 1 << 23;
 constexpr static int full_dataset_item_parents = 512;
 
@@ -380,10 +381,8 @@ int ethash_calculate_light_cache_num_items(int epoch_number) noexcept
 int ethash_calculate_full_dataset_num_items(int epoch_number) noexcept
 {
     static constexpr int item_size = sizeof(hash1024);
-    static constexpr int num_items_init = full_dataset_init_size / item_size;
+    static int num_items_init = get_full_dataset_init_size() / item_size;
     static constexpr int num_items_growth = full_dataset_growth / item_size;
-    static_assert(full_dataset_init_size % item_size == 0,
-        "full_dataset_init_size not multiple of item size");
     static_assert(
         full_dataset_growth % item_size == 0, "full_dataset_growth not multiple of item size");
 
