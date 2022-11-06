@@ -225,9 +225,15 @@ bool kawpow_submit(YAAMP_CLIENT* client, json_value* json_params)
 
     int jobid = htoi(json_params->u.array.values[1]->u.string.ptr);
 
-    strncpy(nonce, json_params->u.array.values[2]->u.string.ptr + 2, 16);
-    strncpy(header, json_params->u.array.values[3]->u.string.ptr + 2, 64);
-    strncpy(mixhash, json_params->u.array.values[4]->u.string.ptr + 2, 64);
+    // test if miner has supplied params with prefix
+    int offset = 0;
+    if (!memcmp(json_params->u.array.values[2]->u.string.ptr, "0x", 2)) {
+        offset = 2;
+    }
+
+    strncpy(nonce, json_params->u.array.values[2]->u.string.ptr + offset, 16);
+    strncpy(header, json_params->u.array.values[3]->u.string.ptr + offset, 64);
+    strncpy(mixhash, json_params->u.array.values[4]->u.string.ptr + offset, 64);
 
     string_lower(nonce);
     string_lower(header);
