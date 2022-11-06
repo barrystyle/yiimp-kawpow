@@ -2,6 +2,8 @@
 
 #include <openssl/sha.h>
 
+#include <firopow/hash.h>
+
 #include <kawpow/hash.h>
 #include <kawpow/helpers.hpp>
 #include <kawpow/include/ethash/progpow.hpp>
@@ -39,7 +41,7 @@ bool kawpow_check_nonceprefix(YAAMP_CLIENT* client, std::string nonce)
 
 uint256 get_kawpow_seed(int height)
 {
-    std::string seed_string = to_hex(ethash::calculate_epoch_seed(ethash::get_epoch_number(height)));
+    std::string seed_string = to_hex(ethash::calculate_epoch_seed(get_epoch_number(height)));
     return uint256S(seed_string);
 }
 
@@ -272,7 +274,11 @@ bool kawpow_submit(YAAMP_CLIENT* client, json_value* json_params)
     std::string nonce_str = string(nonce);
 
     std::string mixhash_calc;
-    uint256 hash = kawpow_hash(header_str, nonce_str, mixhash_calc, coinid);
+    uint256 hash;
+    if (is_kawpow)
+        hash = kawpow_hash(header_str, nonce_str, mixhash_calc, coinid);
+    else if (is_firopow)
+        hash = firopow_hash(header_str, nonce_str, mixhash_calc, coinid);
 
     uint256 target = client->share_target;
     uint64_t hash_int = get_hash_difficulty((uint8_t*)&hash);

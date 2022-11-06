@@ -15,8 +15,7 @@ bool client_suggest_target(YAAMP_CLIENT *client, json_value *json_params)
 
 bool client_subscribe(YAAMP_CLIENT *client, json_value *json_params)
 {
-	if (is_kawpow)
-		get_nonce_prefix(client->extranonce1_default);
+	get_nonce_prefix(client->extranonce1_default);
 
 	client->extranonce2size_default = YAAMP_EXTRANONCE2_SIZE;
 	client->difficulty_actual = g_stratum_difficulty;
@@ -109,8 +108,7 @@ bool client_subscribe(YAAMP_CLIENT *client, json_value *json_params)
 		debuglog("new client with nonce %s\n", client->extranonce1);
 	}
 
-	if (is_kawpow)
-		kawpow_send_nonceprefix(client);
+	kawpow_send_nonceprefix(client);
 
 	return true;
 }

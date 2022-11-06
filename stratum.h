@@ -132,6 +132,8 @@ extern volatile bool g_exiting;
 #include "share.h"
 #include "kawpow/hash.h"
 #include "kawpow/kawpow.h"
+#include "firopow/hash.h"
+#include "firopow/overrides.h"
 
 extern YAAMP_DB *g_db;
 extern YAAMP_ALGO g_algos[];

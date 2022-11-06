@@ -181,6 +181,8 @@ int main(int argc, char **argv)
 		return 1;
 	}
 
+	debuglog("running in %s mode\n", is_kawpow ? "KAWPOW" : "FIROPOW");
+
 //	struct rlimit rlim_files = {0x10000, 0x10000};
 //	setrlimit(RLIMIT_NOFILE, &rlim_files);
 

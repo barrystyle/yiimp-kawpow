@@ -10,6 +10,8 @@
 #include <kawpow/lib/ethash/kiss99.hpp>
 #include <kawpow/include/ethash/keccak.hpp>
 
+#include <firopow/overrides.h>
+
 #include <array>
 
 namespace kawpow
@@ -266,7 +268,7 @@ hash256 hash_mix(
     const epoch_context& context, int block_number, uint32_t * seed, lookup_fn lookup) noexcept
 {
     auto mix = init_mix(seed);
-    auto number = uint64_t(block_number / period_length);
+    auto number = uint64_t(block_number / get_ethash_period_length());
     uint32_t new_state[2];
     new_state[0] = number;
     new_state[1] = number >> 32;

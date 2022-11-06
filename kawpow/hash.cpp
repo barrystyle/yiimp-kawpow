@@ -1,12 +1,6 @@
 #include "stratum.h"
 #include "include/ethash/progpow.hpp"
 
-struct coin_context {
-    int id;
-    int height;
-    ethash::epoch_context_ptr context{nullptr,nullptr};
-};
-
 std::vector<coin_context*> coin_contexts;
 
 void update_epoch(const int& coinid, int& height)
@@ -20,7 +14,7 @@ void update_epoch(const int& coinid, int& height)
                 return;
             }
 
-            const auto epoch_number = ethash::get_epoch_number(height);
+            const auto epoch_number = get_epoch_number(height);
             if (item->context->epoch_number != epoch_number) {
                 item->context = ethash::create_epoch_context(epoch_number);
             }
@@ -31,7 +25,7 @@ void update_epoch(const int& coinid, int& height)
         }
     }
 
-    const auto epoch_number = ethash::get_epoch_number(height);
+    const auto epoch_number = get_epoch_number(height);
     coin_context* item = new coin_context {coinid, height, ethash::create_epoch_context(epoch_number)};
     coin_contexts.push_back(item);
 

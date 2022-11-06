@@ -340,10 +340,5 @@ void client_submit_error(YAAMP_CLIENT *client, YAAMP_JOB *job, int id, const cha
 
 bool client_submit(YAAMP_CLIENT *client, json_value *json_params)
 {
-	if (is_kawpow)
-		return kawpow_submit(client, json_params);
-	else if (is_firopow)
-		return kawpow_submit(client, json_params);
-
-	return false;
+	return kawpow_submit(client, json_params);
 }
