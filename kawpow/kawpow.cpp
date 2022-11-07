@@ -147,10 +147,9 @@ uint256 build_header_hash(YAAMP_JOB_TEMPLATE* templ)
     return header_hash;
 }
 
-static void kawpow_block(YAAMP_CLIENT* client, YAAMP_JOB* job, const char* nonce64, const char* mixhash)
+void kawpow_block(YAAMP_CLIENT* client, YAAMP_JOB* job, YAAMP_JOB_TEMPLATE *templ, const char* nonce64, const char* mixhash)
 {
-    YAAMP_COIND* coind = job->coind;
-    YAAMP_JOB_TEMPLATE* templ = job->templ;
+    YAAMP_COIND *coind = job->coind;
 
     if (job->block_found)
         return;
@@ -304,7 +303,7 @@ bool kawpow_submit(YAAMP_CLIENT* client, json_value* json_params)
     decode_nbits(coin_target, nbits);
 
     if (hash < coin_target) {
-        kawpow_block(client, job, nonce, mixhash);
+        kawpow_block(client, job, templ, nonce, mixhash);
     }
 
     client_send_result(client, "true");
