@@ -1,7 +1,7 @@
 #include "stratum.h"
 #include "include/progpow.hpp"
 
-uint256 firopow_fullhash(uint256& header_hash, uint64_t& header_nonce, uint256& mix_hash, int& coinid)
+uint256 firopow_fullhash(uint256& header_hash, uint64_t& header_nonce, uint256 mix_hash, int& coinid)
 {
     coin_context* context = get_coin_context(coinid);
     if (!context) {
@@ -18,12 +18,9 @@ uint256 firopow_fullhash(uint256& header_hash, uint64_t& header_nonce, uint256& 
 
 uint256 firopow_hash(std::string& header_hash, std::string& header_nonce, std::string& mix_real, int& coinid)
 {
-    uint256 mix_hash;
-
     uint256 header = uint256S(header_hash);
     uint64_t nonce = strtoull(header_nonce.c_str(), NULL, 16);
-    uint256 result_hash = firopow_fullhash(header, nonce, mix_hash, coinid);
+    uint256 result_hash = firopow_fullhash(header, nonce, uint256S(mix_real), coinid);
 
-    mix_real = mix_hash.ToString();
     return result_hash;
 }

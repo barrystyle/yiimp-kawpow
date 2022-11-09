@@ -33,6 +33,34 @@ bool coind_submitwork(YAAMP_COIND *coind, const char *block)
 	return b;
 }
 
+bool coind_pprpcsb(YAAMP_COIND *coind, const char* header_hash, const char* mix_hash, const char* nonce64)
+{
+	char *params = (char *)malloc(1024);
+	if (!params) return false;
+
+        sprintf(params, "[\"%s\",\"0x%s\",\"0x%s\"]", header_hash, mix_hash, nonce64);
+        json_value *json = rpc_call(&coind->rpc, "pprpcsb", params);
+
+        free(params);
+        if(!json) return false;
+
+        json_value *json_error = json_get_object(json, "error");
+        if(json_error && json_error->type != json_null)
+        {
+                const char *p = json_get_string(json_error, "message");
+                if(p) stratumlog("ERROR %s %s\n", coind->name, p);
+                json_value_free(json);
+                return false;
+        }
+
+        json_value *json_result = json_get_object(json, "result");
+
+        bool b = json_result && json_result->type == json_null;
+        json_value_free(json);
+
+        return b;
+}
+
 bool coind_submitblock(YAAMP_COIND *coind, const char *block)
 {
 	int paramlen = strlen(block);

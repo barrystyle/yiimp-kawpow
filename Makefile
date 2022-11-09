@@ -1,7 +1,7 @@
 
 CC=gcc
 
-CFLAGS= -g -O2 -I./
+CFLAGS= -g -O0 -I./
 SQLFLAGS= `mysql_config --cflags --libs`
 
 # Comment this line to disable address check on login,
@@ -9,7 +9,7 @@ SQLFLAGS= `mysql_config --cflags --libs`
 CFLAGS += -DNO_EXCHANGE
 
 #CFLAGS=-c -O2 -I /usr/include/mysql
-LDFLAGS=-O2 `mysql_config --libs`
+LDFLAGS=-O0 `mysql_config --libs`
 
 LDLIBS=iniparser/libiniparser.a -lpthread -lm -lstdc++
 LDLIBS+=-lmysqlclient
@@ -44,6 +44,8 @@ preclean:
 	rm -rf *.*o
 	rm -rf */*.*o
 	rm -rf */*.a
+	rm -rf */lib/*.o
+	rm -rf */lib/ethash/*.o
 
 iniparser:
 	$(MAKE) -C $(CODEDIR1)

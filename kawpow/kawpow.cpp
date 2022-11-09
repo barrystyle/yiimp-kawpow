@@ -149,6 +149,11 @@ uint256 build_header_hash(YAAMP_JOB_TEMPLATE* templ)
 
 void kawpow_block(YAAMP_CLIENT* client, YAAMP_JOB* job, YAAMP_JOB_TEMPLATE *templ, const char* nonce64, const char* mixhash)
 {
+    if (!templ) {
+       debuglog("lost pointer to *templ\n");
+       return;
+    }
+
     YAAMP_COIND *coind = job->coind;
 
     if (job->block_found)
@@ -156,7 +161,7 @@ void kawpow_block(YAAMP_CLIENT* client, YAAMP_JOB* job, YAAMP_JOB_TEMPLATE *temp
     if (job->deleted)
         return;
 
-    int block_size = YAAMP_SMALLBUFSIZE;
+    int block_size = YAAMP_SMALLBUFSIZE + 8192;
     vector<string>::const_iterator i;
 
     for (i = templ->txdata.begin(); i != templ->txdata.end(); ++i)
@@ -283,7 +288,7 @@ bool kawpow_submit(YAAMP_CLIENT* client, json_value* json_params)
     if (is_kawpow)
         hash = kawpow_hash(header_str, nonce_str, mixhash_calc, coinid);
     else if (is_firopow)
-        hash = firopow_hash(header_str, nonce_str, mixhash_calc, coinid);
+        hash = firopow_hash(header_str, nonce_str, mixhash_str, coinid);
 
     uint256 target = client->share_target;
     uint64_t hash_int = get_hash_difficulty((uint8_t*)&hash);
@@ -303,7 +308,18 @@ bool kawpow_submit(YAAMP_CLIENT* client, json_value* json_params)
     decode_nbits(coin_target, nbits);
 
     if (hash < coin_target) {
-        kawpow_block(client, job, templ, nonce, mixhash);
+	if (is_kawpow) {
+		kawpow_block(client, job, templ, nonce, mixhash);
+	}
+	if (is_firopow) {
+		YAAMP_COIND *coind = (YAAMP_COIND *)object_find(&g_list_coind, coinid);
+		if (!coind) {
+			clientlog(client, "unable to find the wallet for coinid %d...", coinid);
+			return false;
+		}
+		coind_pprpcsb(coind, templ->header_hash.ToString().c_str(), mixhash, nonce);
+	}
+	job_signal();
     }
 
     client_send_result(client, "true");
