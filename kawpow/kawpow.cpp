@@ -9,13 +9,18 @@
 #include <kawpow/include/ethash/progpow.hpp>
 
 static int g_extraonce1_counter = 0;
+static bool g_twobyte_extranonce = true;
 
 void get_nonce_prefix(char* extraonce1)
 {
     CommonLock(&g_nonce1_mutex);
 
     g_extraonce1_counter++;
-    sprintf(extraonce1, "%06x", g_extraonce1_counter | 0x800000);
+    if (g_twobyte_extranonce) {
+        sprintf(extraonce1, "%04hhx", g_extraonce1_counter | 0x8000);
+    } else {
+        sprintf(extraonce1, "%06x", g_extraonce1_counter | 0x800000);
+    }
 
     CommonUnlock(&g_nonce1_mutex);
 }
@@ -31,11 +36,13 @@ bool kawpow_send_nonceprefix(YAAMP_CLIENT* client)
 
 bool kawpow_check_nonceprefix(YAAMP_CLIENT* client, std::string nonce)
 {
+    const int extranonce_len = g_twobyte_extranonce ? 4 : 6;
+
     char submitted_nonce[20];
     sprintf(submitted_nonce, "%s", nonce.c_str());
-    submitted_nonce[6] = '\0';
+    submitted_nonce[extranonce_len] = '\0';
 
-    bool match = memcmp(client->extranonce1, submitted_nonce, 6);
+    bool match = memcmp(client->extranonce1, submitted_nonce, extranonce_len);
     return !match;
 }
 
@@ -294,7 +301,7 @@ bool kawpow_submit(YAAMP_CLIENT* client, json_value* json_params)
     uint64_t hash_int = get_hash_difficulty((uint8_t*)&hash);
     double share_diff = diff_to_target(hash_int);
 
-    // stratumlog("client %d on job %d sent powhash %s\n", client->id, job->id, hash.ToString().c_str());
+    stratumlog("client %d on job %d sent powhash %s\n", client->id, job->id, hash.ToString().c_str());
 
     if (hash > target) {
         client_submit_error(client, job, 26, "Low difficulty share", header, mixhash, nonce);
