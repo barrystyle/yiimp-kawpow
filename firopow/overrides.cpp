@@ -1,3 +1,7 @@
+// Copyright (c) 2023 barrystyle
+// Distributed under the MIT software license, see the accompanying
+// file COPYING or http://www.opensource.org/licenses/mit-license.php.
+
 #include "stratum.h"
 
 const int get_ethash_epoch_length()
